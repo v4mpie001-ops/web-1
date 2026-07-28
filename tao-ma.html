@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quản Lý Mã Đăng Ký - HTA & PVK</title>
+  <style>
+    :root {
+      --primary: #3b82f6; --primary-hover: #2563eb; --bg: #f8fafc;
+      --surface: #ffffff; --text: #1e293b; --danger: #ef4444; --success: #10b981;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg); color: var(--text);
+      display: flex; justify-content: center; padding: 50px 20px; margin: 0;
+    }
+    .manager-box {
+      background: var(--surface); width: 100%; max-width: 500px;
+      padding: 30px; border-radius: 12px;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+    h2 { margin-top: 0; text-align: center; color: var(--primary); }
+    .btn-generate {
+      width: 100%; padding: 12px; background: var(--primary); color: white;
+      border: none; border-radius: 8px; font-size: 1rem; font-weight: bold;
+      cursor: pointer; transition: 0.3s; margin-bottom: 20px;
+    }
+    .btn-generate:hover { background: var(--primary-hover); }
+    .code-list {
+      display: flex; flex-direction: column; gap: 10px;
+      max-height: 400px; overflow-y: auto; padding-right: 5px;
+    }
+    .code-item {
+      display: flex; justify-content: space-between; align-items: center;
+      background: #f1f5f9; padding: 12px 15px; border-radius: 8px;
+      border-left: 4px solid var(--primary);
+    }
+    .code-text { font-size: 1.2rem; font-weight: bold; letter-spacing: 2px; }
+    .btn-group { display: flex; gap: 8px; }
+    .btn-copy, .btn-delete {
+      padding: 6px 12px; border: none; border-radius: 6px; cursor: pointer;
+      font-size: 0.9rem; font-weight: bold; color: white; transition: 0.2s;
+    }
+    .btn-copy { background: var(--success); }
+    .btn-copy:hover { background: #059669; }
+    .btn-delete { background: var(--danger); }
+    .btn-delete:hover { background: #dc2626; }
+    .empty-msg { text-align: center; color: #64748b; font-style: italic; }
+    
+    /* Hiệu ứng thông báo copy */
+    #toast {
+      position: fixed; bottom: 20px; right: 20px; background: #333; color: white;
+      padding: 10px 20px; border-radius: 8px; display: none;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="manager-box">
+    <h2>🔑 Trạm Cấp Mã Đăng Ký</h2>
+    <button class="btn-generate" onclick="generateNewCode()">🎲 TẠO MÃ MỚI</button>
+    
+    <div class="code-list" id="code-list">
+      <!-- Các mã sẽ hiện ở đây -->
+    </div>
+  </div>
+
+  <div id="toast">✅ Đã copy mã!</div>
+
+  <script>
+    // Lấy danh sách mã từ localStorage (Chung với file script.js của hệ thống thi)
+    const STORAGE_KEY = 'dbValidCodes';
+    let dbValidCodes = JSON.parse(localStorage.getItem(STORAGE_KEY)) || ["VIP2026", "HTA001", "PVK999", "TESTWEB"];
+
+    // Hàm tạo chuỗi ngẫu nhiên 6 ký tự (Chữ in hoa + Số)
+    function randomAlphanumeric(length) {
+      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+      let result = '';
+      for (let i = 0; i < length; i++) {
+        result += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      return result;
+    }
+
+    // Nút tạo mã mới
+    function generateNewCode() {
+      let newCode;
+      // Vòng lặp đảm bảo không bao giờ tạo ra mã đã tồn tại
+      do {
+        newCode = randomAlphanumeric(6);
+      } while (dbValidCodes.includes(newCode));
+
+      // Thêm mã mới vào mảng và lưu lại
+      dbValidCodes.push(newCode);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(dbValidCodes));
+      renderCodes();
+    }
+
+    // Xóa mã
+    function deleteCode(codeToRemove) {
+      if(confirm(`Ông có chắc chắn muốn xóa mã ${codeToRemove} không?`)) {
+        dbValidCodes = dbValidCodes.filter(code => code !== codeToRemove);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(dbValidCodes));
+        renderCodes();
+      }
+    }
+
+    // Copy mã vào khay nhớ tạm
+    function copyCode(code) {
+      navigator.clipboard.writeText(code).then(() => {
+        const toast = document.getElementById('toast');
+        toast.textContent = `✅ Đã copy: ${code}`;
+        toast.style.display = 'block';
+        setTimeout(() => toast.style.display = 'none', 2000);
+      });
+    }
+
+    // Hiển thị danh sách ra màn hình
+    function renderCodes() {
+      const listContainer = document.getElementById('code-list');
+      listContainer.innerHTML = '';
+
+      if (dbValidCodes.length === 0) {
+        listContainer.innerHTML = '<div class="empty-msg">Hiện chưa có mã nào chưa sử dụng. Hãy tạo mã mới!</div>';
+        return;
+      }
+
+      // Đảo ngược mảng để mã mới tạo hiện lên đầu tiên
+      const displayCodes = [...dbValidCodes].reverse();
+
+      displayCodes.forEach(code => {
+        const item = document.createElement('div');
+        item.className = 'code-item';
+        item.innerHTML = `
+          <div class="code-text">${code}</div>
+          <div class="btn-group">
+            <button class="btn-copy" onclick="copyCode('${code}')">Copy</button>
+            <button class="btn-delete" onclick="deleteCode('${code}')">Xóa</button>
+          </div>
+        `;
+        listContainer.appendChild(item);
+      });
+    }
+
+    // Gọi lần đầu khi load trang
+    renderCodes();
+  </script>
+</body>
+</html>
