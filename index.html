@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hệ Thống Luyện Đề - HTA & PVK</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+</head>
+<body>
+
+  <!-- ĐĂNG NHẬP / ĐĂNG KÝ -->
+  <div id="auth-screen">
+    <div class="auth-box">
+      <div class="auth-title">Hệ Thống Luyện Đề</div>
+      <div class="auth-tabs">
+        <button class="tab-btn active" id="tab-login" onclick="switchTab('login')">Đăng Nhập</button>
+        <button class="tab-btn" id="tab-register" onclick="switchTab('register')">Đăng Ký Mới</button>
+      </div>
+      <div class="input-group">
+        <label>Tên đăng nhập</label>
+        <input type="text" id="username" placeholder="Nhập tên không dấu...">
+      </div>
+      <div class="input-group">
+        <label>Mật khẩu</label>
+        <input type="password" id="password" placeholder="Nhập mật khẩu...">
+      </div>
+      <div class="input-group" id="admin-code-group" style="display: none;">
+        <label>Mã cấp quyền (Admin Code)</label>
+        <input type="text" id="adminCode" placeholder="Nhập mã hệ thống cấp...">
+      </div>
+      <button class="auth-submit" id="btn-auth" onclick="handleAuth()">Đăng Nhập</button>
+      <div id="auth-msg"></div>
+    </div>
+  </div>
+
+  <!-- SẢNH CHỌN MÔN & ĐỀ THI -->
+  <div id="dashboard-screen" style="display: none;">
+    <header>
+      <div class="header-left">HTA & PVK - Sảnh</div>
+      <div class="header-right">
+        <!-- Nút Thêm đề được ẩn đi, chỉ hiện cho Admin -->
+        <button class="btn-add-test" id="btn-add-test" onclick="openUploadModal()" style="display: none;">➕ Thêm Đề Word</button>
+        <div class="user-badge" id="dash-username">👤 Guest</div>
+        <button class="btn-logout" onclick="logout()">Đăng xuất</button>
+      </div>
+    </header>
+    
+    <div class="dashboard-content">
+      <h2 class="dash-title" id="dash-main-title">Chọn môn học</h2>
+      <div class="subject-grid" id="subject-grid"></div>
+      <div id="test-selection" style="display: none;">
+        <button class="btn-back" onclick="backToSubjects()">⬅ Quay lại danh sách môn</button>
+        <div class="test-list" id="test-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHÒNG THI -->
+  <div id="app-screen" style="display: none;">
+    <header>
+      <div class="header-left" id="exam-header-title">Đang làm bài...</div>
+      <div class="header-right">
+        <div class="timer" id="countdown-timer">00:00</div>
+        <button class="btn-submit" id="submit-btn" onclick="submitTest()">Nộp bài</button>
+        <button class="btn-logout" onclick="exitExam()">Thoát</button>
+      </div>
+    </header>
+
+    <div class="main-container">
+      <div class="sidebar">
+        <div class="sidebar-title">Danh sách câu hỏi</div>
+        <div class="question-grid" id="q-grid"></div>
+      </div>
+      <div class="content-area">
+        <div class="quiz-card">
+          <div id="score-display"></div>
+          
+          <div class="q-type-badge" id="q-type-badge">Đang tải...</div>
+          <div class="question-text" id="q-title">Đang tải câu hỏi...</div>
+          
+          <div class="image-box" id="q-image-box">
+            <img id="q-image" src="" alt="">
+          </div>
+          
+          <div id="answers-container"></div>
+          
+          <div class="nav-buttons">
+            <button class="btn-nav" id="btn-prev" onclick="changeQuestion(-1)">Quay lại</button>
+            <button class="btn-nav" id="btn-next" onclick="changeQuestion(1)">Tiếp theo</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL UPLOAD FILE WORD -->
+  <div id="upload-modal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Thêm Đề Thi Mới Từ File Word (.docx)</h3>
+        <span class="close-btn" onclick="closeUploadModal()">&times;</span>
+      </div>
+      <div class="modal-body">
+        <div class="input-group">
+          <label>Môn học</label>
+          <select id="import-subject" class="custom-select">
+            <option value="toan">Toán</option>
+            <option value="ly">Vật Lý</option>
+            <option value="tin">Tin Học</option>
+          </select>
+        </div>
+        <div class="input-group">
+          <label>Tên đề thi</label>
+          <input type="text" id="import-title" placeholder="VD: Đề Ôn Tập Số 1">
+        </div>
+        <div class="input-group">
+          <label>Thời gian làm bài (Phút)</label>
+          <input type="number" id="import-time" value="45">
+        </div>
+        <div class="input-group">
+          <label>Chọn File Word (.docx)</label>
+          <input type="file" id="import-file" accept=".docx">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-submit" onclick="processWordFile()">Tải Đề Lên</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="dev-signature">dev by HTA and PVK</div>
+  <script src="script.js"></script>
+</body>
+</html>
