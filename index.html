@@ -39,6 +39,9 @@
     <header>
       <div class="header-left">HTA & PVK - Sảnh</div>
       <div class="header-right">
+        <button onclick="nextTheme()" style="background: #ec4899; color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; margin-left: 10px; font-weight: bold;">
+    🎨 Đổi Hình Nền
+</button>
         <!-- Nút Thêm đề được ẩn đi, chỉ hiện cho Admin -->
         <button class="btn-add-test" id="btn-add-test" onclick="openUploadModal()" style="display: none;">➕ Thêm Đề Word</button>
         <div class="user-badge" id="dash-username">👤 Guest</div>
@@ -95,6 +98,37 @@
   </div>
 
   <!-- MODAL UPLOAD FILE WORD -->
+  <div id="upload-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); align-items:center; justify-content:center; z-index:999;">
+    <div style="background:white; padding:25px; border-radius:12px; width:450px; max-width:90%;">
+        <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
+            <h3 style="margin:0;">Thêm Đề Thi (Hỗ trợ 2 Phần)</h3>
+            <button onclick="closeUploadModal()" style="border:none; background:none; font-size:1.5rem; cursor:pointer;">&times;</button>
+        </div>
+        
+        <label style="font-weight:bold;">Môn học:</label>
+        <select id="import-subject" style="width:100%; padding:10px; margin-top:5px; margin-bottom:15px; border:1px solid #ccc; border-radius:6px;">
+            <option value="toan">Toán</option><option value="ly">Vật Lý</option><option value="tin">Tin Học</option>
+        </select>
+        
+        <label style="font-weight:bold;">Tên đề thi:</label>
+        <input type="text" id="import-title" placeholder="VD: Toán THPT Đề 1..." style="width:100%; padding:10px; margin-top:5px; margin-bottom:15px; border:1px solid #ccc; border-radius:6px; box-sizing:border-box;">
+        
+        <label style="font-weight:bold;">Thời gian làm bài (Phút):</label>
+        <input type="number" id="import-time" value="45" style="width:100%; padding:10px; margin-top:5px; margin-bottom:15px; border:1px solid #ccc; border-radius:6px; box-sizing:border-box;">
+        
+        <div style="background: #f1f5f9; padding: 10px; border-radius: 8px; border-left: 4px solid #3b82f6; margin-bottom: 10px;">
+            <label style="color:#2563eb; font-weight:bold;">1. Tải lên File Trắc nghiệm & Đúng/Sai</label>
+            <input type="file" id="import-file-mcq" accept=".docx" style="margin-top:5px;">
+        </div>
+
+        <div style="background: #fdf2f8; padding: 10px; border-radius: 8px; border-left: 4px solid #ec4899; margin-bottom: 20px;">
+            <label style="color:#db2777; font-weight:bold;">2. Tải lên File Tự Luận (Bỏ trống nếu k có)</label>
+            <input type="file" id="import-file-sa" accept=".docx" style="margin-top:5px;">
+        </div>
+        
+        <button onclick="processWordFile()" style="width:100%; padding:12px; background:#3b82f6; color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">Tiến hành nạp đề</button>
+    </div>
+</div>
   <div id="upload-modal" class="modal" style="display: none;">
     <div class="modal-content">
       <div class="modal-header">

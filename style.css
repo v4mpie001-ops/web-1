@@ -112,3 +112,8 @@ header { background: #1e293b; color: white; padding: 0 24px; height: 60px; displ
 .score-stats { display: flex; justify-content: center; gap: 20px; font-size: 1rem; color: #15803d; flex-wrap: wrap; }
 .score-stats span { font-weight: 700; }
 .dev-signature { position: fixed; bottom: 12px; left: 15px; font-size: 0.75rem; color: var(--text-muted); background: white; padding: 4px 10px; border-radius: 12px; border: 1px solid var(--border); }
+.subject-card, .test-item, #answers-container, #q-grid, .modal-content {
+    background: rgba(255, 255, 255, 0.9) !important;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
