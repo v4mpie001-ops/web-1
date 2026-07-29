@@ -130,17 +130,6 @@ function updateTimerUI() {
 
 function exitExam() { if (!isSubmitted && !confirm("Chưa nộp bài, thoát sẽ mất bài?")) return; clearInterval(timerInterval); showDashboard(); }
 
-function renderSidebar() {
-  const grid = document.getElementById('q-grid'); grid.innerHTML = '';
-  currentQuestions.forEach((q, index) => {
-    const btn = document.createElement('div'); btn.className = 'q-btn'; btn.textContent = index + 1;
-    btn.onclick = () => { currentQIndex = index; renderSidebar(); renderQuestion(); };
-    if (index === currentQIndex) btn.classList.add('active');
-    else { let ans = userAnswers[index]; if (ans && (typeof ans !== 'object' || Object.keys(ans).length > 0)) btn.classList.add('answered'); }
-    grid.appendChild(btn);
-  });
-}
-
 function renderQuestion() {
   const q = currentQuestions[currentQIndex]; const container = document.getElementById('answers-container'); container.innerHTML = '';
   document.getElementById('q-type-badge').textContent = q.type === 'mcq' ? "Dạng 1: Trắc nghiệm 4 đáp án" : q.type === 'tf' ? "Dạng 2: Đúng/Sai" : "Dạng 3: Trả lời ngắn";
@@ -171,7 +160,6 @@ function renderQuestion() {
                       ${userVal ? `Bạn chọn: ${userVal} <br>` : ''}Đáp án: ${q.correct[subKey]}
                     </div>`;
       }
-      // Dòng này là chỗ bị đứt đoạn trong code cũ của ông, tôi đã nối lại
       row.innerHTML = `<td><b>${subKey})</b> ${q.items[subKey]}</td><td align="center">${btnGroup}</td>`;
       table.querySelector('tbody').appendChild(row);
     });
@@ -187,7 +175,6 @@ function renderQuestion() {
     container.innerHTML = inputHtml;
   }
 
-  // Cập nhật hiển thị nút điều hướng
   document.getElementById('btn-prev').style.display = currentQIndex === 0 ? 'none' : 'inline-block';
   document.getElementById('btn-next').style.display = currentQIndex === currentQuestions.length - 1 ? 'none' : 'inline-block';
 }
@@ -204,6 +191,8 @@ function changeQuestion(step) {
     renderQuestion();
     renderSidebar();
 }
+
+// Render Sidebar chia phần chuẩn mực
 function renderSidebar() {
   const grid = document.getElementById('q-grid'); grid.innerHTML = '';
   let hasRenderedPart1 = false; let hasRenderedPart2 = false;
@@ -230,6 +219,7 @@ function renderSidebar() {
     grid.appendChild(btn);
   });
 }
+
 function submitTest() {
     if(!isSubmitted && !confirm("Bạn có chắc chắn muốn nộp bài?")) return;
     clearInterval(timerInterval);
@@ -262,11 +252,20 @@ function submitTest() {
 
         // Cập nhật sidebar màu sắc
         let btn = document.getElementById('q-grid').children[i];
-        btn.classList.remove('active', 'answered');
-        if(isCorrect) {
-           btn.classList.add('review-correct');
-        } else {
-           btn.classList.add('review-wrong');
+        if (q.type === 'sa' && i !== 0) {
+            // Tính bù chỉ số cho các thẻ tiêu đề (nếu phần tử bị xô lệch)
+            // Lấy trực tiếp button theo nội dung số câu
+            const allBtns = document.querySelectorAll('.q-btn');
+            btn = Array.from(allBtns).find(b => b.textContent == (i + 1));
+        }
+        
+        if (btn) {
+            btn.classList.remove('active', 'answered');
+            if(isCorrect) {
+               btn.classList.add('review-correct');
+            } else {
+               btn.classList.add('review-wrong');
+            }
         }
     });
 
@@ -286,6 +285,7 @@ function submitTest() {
 // =========================================
 function openUploadModal() { document.getElementById('upload-modal').style.display = 'flex'; }
 function closeUploadModal() { document.getElementById('upload-modal').style.display = 'none'; }
+
 // Hàm đọc file Word thành HTML (Trả về Promise để dùng Async/Await)
 function readWordAsync(file) {
     return new Promise((resolve, reject) => {
@@ -407,8 +407,3 @@ function parseHtmlToQuestions(html, forcedMode) {
   });
   if (currentQ) questions.push(currentQ); return questions;
 }
-<script src="database.js"></script>
-    <script src="themes.js"></script>
-    <script src="script.js"></script>
-</body>
-</html>

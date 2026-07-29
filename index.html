@@ -40,9 +40,8 @@
       <div class="header-left">HTA & PVK - Sảnh</div>
       <div class="header-right">
         <button onclick="nextTheme()" style="background: #ec4899; color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; margin-left: 10px; font-weight: bold;">
-    🎨 Đổi Hình Nền
-</button>
-        <!-- Nút Thêm đề được ẩn đi, chỉ hiện cho Admin -->
+            🎨 Đổi Hình Nền
+        </button>
         <button class="btn-add-test" id="btn-add-test" onclick="openUploadModal()" style="display: none;">➕ Thêm Đề Word</button>
         <div class="user-badge" id="dash-username">👤 Guest</div>
         <button class="btn-logout" onclick="logout()">Đăng xuất</button>
@@ -97,7 +96,7 @@
     </div>
   </div>
 
-  <!-- MODAL UPLOAD FILE WORD -->
+  <!-- MODAL UPLOAD FILE WORD (Đã fix gộp thành 1) -->
   <div id="upload-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); align-items:center; justify-content:center; z-index:999;">
     <div style="background:white; padding:25px; border-radius:12px; width:450px; max-width:90%;">
         <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
@@ -128,45 +127,13 @@
         
         <button onclick="processWordFile()" style="width:100%; padding:12px; background:#3b82f6; color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">Tiến hành nạp đề</button>
     </div>
-</div>
-  <div id="upload-modal" class="modal" style="display: none;">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3>Thêm Đề Thi Mới Từ File Word (.docx)</h3>
-        <span class="close-btn" onclick="closeUploadModal()">&times;</span>
-      </div>
-      <div class="modal-body">
-        <div class="input-group">
-          <label>Môn học</label>
-          <select id="import-subject" class="custom-select">
-            <option value="toan">Toán</option>
-            <option value="ly">Vật Lý</option>
-            <option value="tin">Tin Học</option>
-          </select>
-        </div>
-        <div class="input-group">
-          <label>Tên đề thi</label>
-          <input type="text" id="import-title" placeholder="VD: Đề Ôn Tập Số 1">
-        </div>
-        <div class="input-group">
-          <label>Thời gian làm bài (Phút)</label>
-          <input type="number" id="import-time" value="45">
-        </div>
-        <div class="input-group">
-          <label>Chọn File Word (.docx)</label>
-          <input type="file" id="import-file" accept=".docx">
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn-submit" onclick="processWordFile()">Tải Đề Lên</button>
-      </div>
-    </div>
   </div>
 
   <div class="dev-signature">dev by HTA and PVK</div>
+
+  <!-- Thứ tự nạp script rất quan trọng -->
+  <script src="database.js"></script>
+  <script src="themes.js"></script>
   <script src="script.js"></script>
-<!-- Phải để file database nằm TRÊN file script -->
-    <script src="database.js"></script>
-    <script src="script.js"></script>
 </body>
 </html>
