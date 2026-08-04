@@ -62,18 +62,18 @@
     <button class="btn-generate" onclick="generateNewCode()">🎲 TẠO MÃ MỚI</button>
     
     <div class="code-list" id="code-list">
-      <!-- Các mã sẽ hiện ở đây -->
+      <!-- các mã sẽ hiện ở đây -->
     </div>
   </div>
 
   <div id="toast">✅ Đã copy mã!</div>
 
   <script>
-    // Lấy danh sách mã từ localStorage (Chung với file script.js của hệ thống thi)
+    // lấy danh sách mã từ localStorage (Chung với file script.js của hệ thống thi)
     const STORAGE_KEY = 'dbValidCodes';
     let dbValidCodes = JSON.parse(localStorage.getItem(STORAGE_KEY)) || ["VIP2026", "HTA001", "PVK999", "TESTWEB"];
 
-    // Hàm tạo chuỗi ngẫu nhiên 6 ký tự (Chữ in hoa + Số)
+    // tạo chuỗi ngẫu nhiên 6 ký tự 
     function randomAlphanumeric(length) {
       const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
       let result = '';
@@ -83,21 +83,21 @@
       return result;
     }
 
-    // Nút tạo mã mới
+    // nút tạo mã mới
     function generateNewCode() {
       let newCode;
-      // Vòng lặp đảm bảo không bao giờ tạo ra mã đã tồn tại
+      // Random mã 0 giong nhau
       do {
         newCode = randomAlphanumeric(6);
       } while (dbValidCodes.includes(newCode));
 
-      // Thêm mã mới vào mảng và lưu lại
+      // thêm mã mới vào mảng và lưu lại
       dbValidCodes.push(newCode);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(dbValidCodes));
       renderCodes();
     }
 
-    // Xóa mã
+    // xóa mã
     function deleteCode(codeToRemove) {
       if(confirm(`Ông có chắc chắn muốn xóa mã ${codeToRemove} không?`)) {
         dbValidCodes = dbValidCodes.filter(code => code !== codeToRemove);
@@ -106,7 +106,7 @@
       }
     }
 
-    // Copy mã vào khay nhớ tạm
+    // copy mã
     function copyCode(code) {
       navigator.clipboard.writeText(code).then(() => {
         const toast = document.getElementById('toast');
@@ -116,7 +116,7 @@
       });
     }
 
-    // Hiển thị danh sách ra màn hình
+    // hiện danh sách 
     function renderCodes() {
       const listContainer = document.getElementById('code-list');
       listContainer.innerHTML = '';
@@ -126,7 +126,7 @@
         return;
       }
 
-      // Đảo ngược mảng để mã mới tạo hiện lên đầu tiên
+      // tạo mã mới
       const displayCodes = [...dbValidCodes].reverse();
 
       displayCodes.forEach(code => {
@@ -143,7 +143,7 @@
       });
     }
 
-    // Gọi lần đầu khi load trang
+    // gọi lần đầu khi load trang
     renderCodes();
   </script>
 </body>

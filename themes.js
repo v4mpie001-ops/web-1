@@ -1,32 +1,28 @@
-// Danh sách các Theme (Hình nền)
-const appThemes = [
-    { name: "Mặc định (Xám Tối)", background: "#1e293b", isImage: false },
-    { name: "Bầu trời đêm (Moon)", background: "images (3).jpg", isImage: true },
-    { name: "Hoa anh đào hoàng hôn", background: "images (4).jpg", isImage: true },
-    { name: "Đồng cỏ xanh tươi", background: "images (5).jpg", isImage: true },
-    { name: "Cổng Torii kỳ ảo", background: "images (6).jpg", isImage: true }
+const backgrounds = [
+    "", // Nền mặc định
+    "url('images (3)_2.jpg')", 
+    "url('images (6)_2.jpg')",
+    "url('images (5)_2.jpg')",
+    "url('images (4)_2.jpg')"
 ];
 
-let currentThemeIndex = parseInt(localStorage.getItem('savedTheme')) || 0;
+let currentBgIndex = 0;
 
-function applyTheme(index) {
-    const theme = appThemes[index];
-    if (theme.isImage) {
-        document.body.style.backgroundImage = `url('${theme.background}')`;
+function nextTheme() {
+    currentBgIndex++;
+    if (currentBgIndex >= backgrounds.length) {
+        currentBgIndex = 0; // Quay lại nền mặc định nếu đã bấm hết vòng
+    }
+
+    if (backgrounds[currentBgIndex] === "") {
+        // Về nền gốc
+        document.body.style.backgroundImage = "none";
+        document.body.style.backgroundColor = "#0f172a"; 
+    } else {
+        // Đổi ảnh nền
+        document.body.style.backgroundImage = backgrounds[currentBgIndex];
         document.body.style.backgroundSize = "cover";
         document.body.style.backgroundPosition = "center";
         document.body.style.backgroundAttachment = "fixed";
-    } else {
-        document.body.style.backgroundImage = "none";
-        document.body.style.backgroundColor = theme.background;
     }
-    localStorage.setItem('savedTheme', index);
 }
-
-function nextTheme() {
-    currentThemeIndex = (currentThemeIndex + 1) % appThemes.length;
-    applyTheme(currentThemeIndex);
-}
-
-// Chạy theme ngay khi load file
-applyTheme(currentThemeIndex);
